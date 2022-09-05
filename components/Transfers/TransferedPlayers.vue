@@ -28,10 +28,13 @@ var GetPlayers = async () => {
   var pi = new Player(idsIncoming);
   try {
     var playersSummary1 = await pi.getDetails();
-    playersSummary1.forEach(
-      (p) =>
-        (playersIncomming.value.find((pi) => pi.in == p.id).name = p.web_name)
-    );
+
+    playersSummary1.forEach((p) => {
+      console.log(p);
+      playersIncomming.value.find(
+        (pi) => pi.in == p.id
+      ).name = `${p.web_name} (${p.event_points})`;
+    });
   } catch (error) {
     console.log(error);
   }
@@ -41,7 +44,9 @@ var GetPlayers = async () => {
     var playersSummary2 = await po.getDetails();
     playersSummary2.forEach(
       (p) =>
-        (playersOutgoing.value.find((pi) => pi.out == p.id).name = p.web_name)
+        (playersOutgoing.value.find(
+          (pi) => pi.out == p.id
+        ).name = `${p.web_name} (${p.event_points})`)
     );
   } catch (error) {
     console.log(error);
@@ -50,24 +55,39 @@ var GetPlayers = async () => {
 </script>
 <template>
   <div class="content-container" style="padding: 1em">
-    <div style="display: flex; whitespace: bre">
+    <div style="display: flex; min-width: 350px; justify-content: space-evenly">
       <div>
-        <h2>🟢Incoming</h2>
-        <ul v-for="(playerid, index) in playersIncomming" :key="index">
-          <p style="font-weight: bolder">{{ playerid.name }}</p>
-          <div v-for="(user, index) in playerid.users" :key="index">
+        <h2>✍Incoming</h2>
+        <div v-for="(playerid, index) in playersIncomming" :key="index">
+          <div style="font-weight: bolder; margin-top: 5px">
+            <span style="font-size: 0.5em">🟢</span>
+            {{ playerid.name ?? "Unknown" }}
+          </div>
+          <div
+            v-for="(user, index) in playerid.users"
+            :key="index"
+            style="font-size: 0.8em"
+          >
             {{ user }}
           </div>
-        </ul>
+        </div>
       </div>
+      <div style="border: 1px solid lightgreen; margin-top: 50px"></div>
       <div>
-        <h2>🔴Outgoing</h2>
-        <ul v-for="(playerid, index) in playersOutgoing" :key="index">
-          <p style="font-weight: bolder">{{ playerid.name }}</p>
-          <div v-for="(user, index) in playerid.users" :key="index">
+        <h2>👋Outgoing</h2>
+        <div v-for="(playerid, index) in playersOutgoing" :key="index">
+          <div style="font-weight: bolder; margin-top: 5px">
+            <span style="font-size: 0.5em">🔴</span>
+            {{ playerid.name ?? "Unknown" }}
+          </div>
+          <div
+            v-for="(user, index) in playerid.users"
+            :key="index"
+            style="font-size: 0.8em"
+          >
             {{ user }}
           </div>
-        </ul>
+        </div>
       </div>
     </div>
   </div>

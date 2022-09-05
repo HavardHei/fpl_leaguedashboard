@@ -3,7 +3,7 @@ import { Gameweek, ClassicLeague } from "fpl-ts";
 import debounce from "~/helpers/debounce";
 
 const LeagueDetails = async () => {
-  const league = new ClassicLeague(1224173);
+  const league = new ClassicLeague(leagueId.value);
   try {
     const details = await league.getDetails();
     leaguedetails.value = details;
@@ -28,7 +28,8 @@ onMounted(() => {
   GameweekDetails();
 });
 var leagueId = ref(1224173);
-
+//BACON - 1771345
+//JOBBNORGE - 1224173
 var leaguedetails = ref(null);
 var gameweeks = ref(null);
 var teams = ref([]);
@@ -62,7 +63,7 @@ const onInput = debounce((e) => {
       style="
         padding: 1em;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(530px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 1.5em;
         grid-auto-flow: column;
       "
@@ -134,6 +135,7 @@ h3,
 h4,
 h5 {
   color: #37003c;
+  white-space: nowrap;
 }
 .components-container {
   height: fit-content;

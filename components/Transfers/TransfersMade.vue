@@ -5,7 +5,7 @@ var props = defineProps({
 </script>
 <template>
   <div class="content-container" style="padding: 1em">
-    <h2>Transfers made</h2>
+    <h2>Total transfers made</h2>
     <div
       v-for="(team, index) in teams.sort((a, b) => {
         return b.player.length - a.player.length;

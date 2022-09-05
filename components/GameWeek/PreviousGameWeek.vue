@@ -14,13 +14,12 @@ var chip_3xc = chips.find((x) => x.chip_name == "3xc");
     class="content-container"
     style="text-align: center; display: grid; grid-template-columns: 1fr 1fr"
   >
-    <h2 style="grid-column: 1 / 2 span">Previous gameweek</h2>
-    <h5 style="grid-column: 1 / 2 span; margin-top: -1em">
+    <h2 style="grid-column: 1 / 2 span; margin-bottom: 0">
       {{ gameweek.name }}
-    </h5>
-    <h5 style="grid-column: 1 / 2 span; margin: 0">Global stats</h5>
+    </h2>
+
     <div>
-      <h3>Scores</h3>
+      <h4>Scores</h4>
       <p id="avgscore">{{ gameweek.highest_score }}</p>
       <label for="avgscore">Highest score</label>
       <p id="avgscore">{{ gameweek.average_entry_score }}</p>
@@ -29,7 +28,7 @@ var chip_3xc = chips.find((x) => x.chip_name == "3xc");
       <label for="mostCptnd">Transfers made</label>
     </div>
     <div>
-      <h3>Chips</h3>
+      <h4>Chips</h4>
       <p id="pBenchboost">{{ chip_benchboost.num_played }}</p>
       <label for="pBenchboost"> Bench Boost</label>
       <p id="pFreehit">{{ chip_freehit.num_played }}</p>

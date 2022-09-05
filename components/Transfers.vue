@@ -37,12 +37,10 @@ var GetTransfers = async (teamId) => {
 </script>
 
 <template>
-  <div>
-    <TransfersMade :teams="teams"> </TransfersMade>
-    <TransferedPlayers
-      v-if="playerIds.length > 0 && highestVal > 0"
-      :playerIds="playerIds"
-      :lastGameweek="highestVal"
-    ></TransferedPlayers>
-  </div>
+  <TransfersMade :teams="teams"> </TransfersMade>
+  <TransferedPlayers
+    v-if="playerIds.length > 0 && highestVal > 0"
+    :playerIds="playerIds"
+    :lastGameweek="highestVal"
+  ></TransferedPlayers>
 </template>

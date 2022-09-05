@@ -10,12 +10,11 @@ var changedRank = (val) => {
 <template>
   <div class="bg_white content-container">
     <h2 style="text-align: center">Standings</h2>
-    <table style="margin: 1em; text-align: left">
+    <table style="text-align: left">
       <thead>
         <tr>
           <th>#</th>
           <td>Lag</td>
-          <td></td>
           <th>⚽</th>
         </tr>
       </thead>
@@ -25,8 +24,12 @@ var changedRank = (val) => {
             #{{ index + 1 }}
             <span v-html="changedRank(player.last_rank - player.rank)"></span>
           </td>
-          <td>{{ player.entry_name.replace("?", "").replace("�", "") }}</td>
-          <td>{{ player.player_name.replace("?", "").replace("�", "") }}</td>
+          <td>
+            <div>{{ player.entry_name.replace("?", "").replace("�", "") }}</div>
+            <span style="font-size: 0.7em; color: grey">{{
+              player.player_name.replace("?", "").replace("�", "")
+            }}</span>
+          </td>
           <td>{{ player.total }}</td>
         </tr>
       </tbody>
