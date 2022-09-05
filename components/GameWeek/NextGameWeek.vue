@@ -22,9 +22,9 @@ var setTime = () => {
   var days = Math.round(Math.abs(countDownDate - new Date()) / msInDay);
   var hours = Math.round(Math.abs(countDownDate - new Date()) / msInHour);
   var minutes = Math.round(Math.abs(countDownDate - new Date()) / msInMinutes);
-  deadline.value.hours = hours % 24;
-  deadline.value.minutes = minutes % 60;
-  deadline.value.days = days - 1;
+  deadline.value.hours = hours;
+  deadline.value.minutes = minutes;
+  deadline.value.days = days;
 };
 if (props.gameweek) {
   setTime();
@@ -35,10 +35,16 @@ if (props.gameweek) {
 <template>
   <div class="content-container" style="padding: 1em">
     <h2>{{ gameweek.name }}</h2>
-    <p id="deadline">
-      {{ deadline.days % (24 * 1044) }}d {{ deadline.hours % 24 }}h
-      {{ deadline.minutes }}m
-    </p>
-    <label for="deadline">⏰Deadline</label>
+    {{}}
+    <div v-if="new Date(gameweek.deadline_time) - new Date() < 0">
+      <p id="active">⚽Aktiv!</p>
+    </div>
+    <div v-else>
+      <p id="deadline">
+        {{ deadline.days % (24 * 1044) }}d {{ deadline.hours % 24 }}h
+        {{ deadline.minutes % 60 }}m
+      </p>
+      <label for="deadline">⏰Deadline</label>
+    </div>
   </div>
 </template>

@@ -8,12 +8,16 @@ var nextGameWeek = props?.gameweeks.find((x) => !x.finished);
 var previousGameWeek = props?.gameweeks.find(
   (x) => x.id == nextGameWeek.id - 1
 );
-onMounted(() => {
-  console.log(props.gameweeks);
-});
 </script>
 <template>
-  <div class="components-container" style="display: grid; gap: 1em">
+  <div
+    class="components-container"
+    style="
+      display: grid;
+      gap: 1em;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    "
+  >
     <NextGameWeek :gameweek="nextGameWeek"></NextGameWeek>
     <PreviousGameWeek :gameweek="previousGameWeek"></PreviousGameWeek>
   </div>

@@ -1,11 +1,13 @@
 <script setup>
 import { Gameweek, ClassicLeague } from "fpl-ts";
+import debounce from "~/helpers/debounce";
 
 const LeagueDetails = async () => {
   const league = new ClassicLeague(1224173);
   try {
     const details = await league.getDetails();
-    b.value = details;
+    leaguedetails.value = details;
+    details.standings.results.forEach((x) => teams.value.push(x));
   } catch (err) {
     console.error(err);
   }
@@ -25,40 +27,50 @@ onMounted(() => {
   LeagueDetails();
   GameweekDetails();
 });
-var a = ref(1224173);
-var b = ref(null);
+var leagueId = ref(1224173);
+
+var leaguedetails = ref(null);
 var gameweeks = ref(null);
-import debounce from "~/helpers/debounce";
+var teams = ref([]);
 const onInput = debounce((e) => {
-  console.log(a);
+  console.log(leagueId);
 }, 500);
 </script>
 
 <template>
   <div>
-    <div v-if="b" class="fpl_bg" style="padding: 1em; text-align: center">
-      <h1>{{ b.league.name }}</h1>
+    <div
+      v-if="leaguedetails"
+      class="fpl_bg"
+      style="padding: 1em; text-align: center"
+    >
+      <h1>{{ leaguedetails.league.name }}</h1>
       <div style="text-align: right; margin-right: 1em">
         <p id="pCreatedHeader" style="margin: 0; margin-top: -1em">
-          {{ new Date(b.league.created).toLocaleDateString("nb-NO") }}
+          {{
+            new Date(leaguedetails.league.created).toLocaleDateString("nb-NO")
+          }}
         </p>
         <label for="pCreatedHeader"> Created </label>
       </div>
     </div>
-    <div v-if="!b">
+    <div v-if="!leaguedetails">
       <label for="iLeagueID">Your Fantasy League ID</label>
-      <input @input="onInput" v-model="a" />
+      <input @input="onInput" v-model="leagueId" />
     </div>
     <div
       style="
         padding: 1em;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(530px, 1fr));
         gap: 1.5em;
+        grid-auto-flow: column;
       "
     >
-      <League v-if="b?.standings" :leagueDetails="b"> </League>
+      <League v-if="leaguedetails?.standings" :leagueDetails="leaguedetails">
+      </League>
       <GameWeeks v-if="gameweeks != null" :gameweeks="gameweeks"></GameWeeks>
+      <Transfers v-if="teams.length > 0" :teamIds="teams"></Transfers>
     </div>
   </div>
 </template>

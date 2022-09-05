@@ -11,9 +11,6 @@ var props = defineProps({
     standings: Object,
   },
 });
-onMounted(() => {
-  console.log(props);
-});
 </script>
 <style>
 .components-container {
