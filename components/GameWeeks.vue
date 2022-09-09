@@ -1,15 +1,16 @@
 <script setup>
-import NextGameWeek from "./GameWeek/NextGameWeek.vue";
+import { store } from "~/store/store.js"
 import PreviousGameWeek from "./GameWeek/PreviousGameWeek.vue";
 var props = defineProps({
   gameweeks: [],
 });
-var nextGameWeek = props?.gameweeks.find((x) => !x.finished);
 var previousGameWeek = props?.gameweeks.find(
-  (x) => x.id == nextGameWeek.id - 1
+  (x) => x.id == (props.gameweeks.find((x) => !x.finished).id) - 1
 );
+store.currentgameweek = previousGameWeek;
 </script>
 <template>
-  <NextGameWeek :gameweek="nextGameWeek"></NextGameWeek>
-  <PreviousGameWeek :gameweek="previousGameWeek"></PreviousGameWeek>
+  <div style="display:flex; flex-flow:column; gap:1em;">
+    <PreviousGameWeek :gameweek="previousGameWeek"></PreviousGameWeek>
+  </div>
 </template>

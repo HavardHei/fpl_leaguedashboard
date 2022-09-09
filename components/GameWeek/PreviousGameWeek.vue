@@ -1,4 +1,5 @@
 <script setup>
+import FPLCard from '../UI/FPLCard.vue';
 var props = defineProps({
   gameweek: Object,
 });
@@ -10,33 +11,33 @@ var chip_3xc = chips.find((x) => x.chip_name == "3xc");
 </script>
 
 <template>
-  <div
-    class="content-container"
-    style="text-align: center; display: grid; grid-template-columns: 1fr 1fr"
-  >
-    <h2 style="grid-column: 1 / 2 span; margin-bottom: 0">
+  <FPLCard>
+    <template v-slot:header>
       {{ gameweek.name }}
-    </h2>
-
-    <div>
-      <h4>Scores</h4>
-      <p id="avgscore">{{ gameweek.highest_score }}</p>
-      <label for="avgscore">Highest score</label>
-      <p id="avgscore">{{ gameweek.average_entry_score }}</p>
-      <label for="avgscore">Average score</label>
-      <p id="mostCptnd">{{ gameweek.transfers_made }}</p>
-      <label for="mostCptnd">Transfers made</label>
-    </div>
-    <div>
-      <h4>Chips</h4>
-      <p id="pBenchboost">{{ chip_benchboost.num_played }}</p>
-      <label for="pBenchboost"> Bench Boost</label>
-      <p id="pFreehit">{{ chip_freehit.num_played }}</p>
-      <label for="pFreehit">Free Hit</label>
-      <p id="pWildcard">{{ chip_wildcard.num_played }}</p>
-      <label for="pWildcard">Wildcard</label>
-      <p id="p3xc">{{ chip_3xc.num_played }}</p>
-      <label for="p3xc">Triple Captain</label>
-    </div>
-  </div>
+    </template>
+    <template v-slot:content>
+      <div style="display:flex; justify-content:space-between; gap:2em;">
+        <div>
+          <h4>Scores</h4>
+          <p id="avgscore">{{ gameweek.highest_score }}</p>
+          <label for="avgscore">Highest score</label>
+          <p id="avgscore">{{ gameweek.average_entry_score }}</p>
+          <label for="avgscore">Average score</label>
+          <p id="mostCptnd">{{ gameweek.transfers_made }}</p>
+          <label for="mostCptnd">Transfers made</label>
+        </div>
+        <div>
+          <h4>Chips</h4>
+          <p id="pBenchboost">{{ chip_benchboost.num_played }}</p>
+          <label for="pBenchboost"> Bench Boost</label>
+          <p id="pFreehit">{{ chip_freehit.num_played }}</p>
+          <label for="pFreehit">Free Hit</label>
+          <p id="pWildcard">{{ chip_wildcard.num_played }}</p>
+          <label for="pWildcard">Wildcard</label>
+          <p id="p3xc">{{ chip_3xc.num_played }}</p>
+          <label for="p3xc">Triple Captain</label>
+        </div>
+      </div>
+    </template>
+  </FPLCard>
 </template>

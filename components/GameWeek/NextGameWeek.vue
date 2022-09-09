@@ -33,18 +33,16 @@ if (props.gameweek) {
 </script>
 
 <template>
-  <div class="content-container" style="padding: 1em">
-    <h2>{{ gameweek.name }}</h2>
-    {{}}
-    <div v-if="new Date(gameweek.deadline_time) - new Date() < 0">
-      <p id="active">⚽Aktiv!</p>
-    </div>
-    <div v-else>
-      <p id="deadline">
-        {{ deadline.days % (24 * 1044) }}d {{ deadline.hours % 24 }}h
-        {{ deadline.minutes % 60 }}m
-      </p>
-      <label for="deadline">⏰Deadline</label>
-    </div>
+
+  <div v-if="new Date(gameweek.deadline_time) - new Date() < 0">
+    <p id="active">⚽Aktiv!</p>
   </div>
+  <div v-else>
+    <p id="deadline" style="margin: 0; margin-top: -1em">
+      {{ deadline.days % (24 * 1044) }}d {{ deadline.hours % 24 }}h
+      {{ deadline.minutes % 60 }}m
+    </p>
+    <label for="deadline">⏰Deadline</label>
+  </div>
+
 </template>

@@ -1,4 +1,6 @@
 <script setup>
+import FPLCard from './UI/FPLCard.vue';
+import { store } from '~/store/store.js'
 var props = defineProps({
   players: [],
 });
@@ -6,35 +8,47 @@ var changedRank = (val) => {
   if (val < 0) return `<span style="color:red">(${val})</span>`;
   if (val > 0) return `<span style="color:green">(+${val})</span>`;
 };
+var GetTransfers = (id) => {
+  var transfers = store.transfers?.find(t => t.user.id == id);
+  return transfers?.player.filter(p => p.event == store.currentgameweek.id)?.length;
+}
 </script>
 <template>
-  <div class="bg_white content-container">
-    <h2 style="text-align: center">Standings</h2>
-    <table style="text-align: left">
-      <thead>
-        <tr>
-          <th>#</th>
-          <td>Lag</td>
-          <th>⚽</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(player, index) in players" :key="index">
-          <td>
-            #{{ index + 1 }}
-            <span v-html="changedRank(player.last_rank - player.rank)"></span>
-          </td>
-          <td>
-            <div>{{ player.entry_name.replace("?", "").replace("�", "") }}</div>
-            <span style="font-size: 0.7em; color: grey">{{
+  <FPLCard>
+    <template v-slot:header>
+      Standings
+    </template>
+    <template v-slot:content>
+      <table style="text-align: left">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Team</th>
+            <th>Subs</th>
+            <th>Points</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(player, index) in players" :key="index">
+            <td>
+              {{ index + 1 }}
+              <span v-html="changedRank(player.last_rank - player.rank)"></span>
+            </td>
+            <td>
+              <div>{{ player.entry_name.replace("?", "").replace("�", "") }}</div>
+              <span style="font-size: 0.7em; color: grey">{{
               player.player_name.replace("?", "").replace("�", "")
-            }}</span>
-          </td>
-          <td>{{ player.total }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+              }}</span>
+            </td>
+            <td style="text-align:center;">{{GetTransfers(player.id)}}</td>
+            <td style="text-align:center;">{{ player.event_total }} </td>
+            <td style="text-align:center;">{{ player.total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
+  </FPLCard>
 </template>
 
 <style>
