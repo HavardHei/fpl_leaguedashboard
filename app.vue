@@ -1,15 +1,14 @@
 <script setup>
 import { Gameweek, ClassicLeague } from "fpl-ts";
-import { store } from "~/store/store.js"
+import { store } from "~/store/store.js";
 import debounce from "~/helpers/debounce";
-import NextGameWeek from "./components/GameWeek/NextGameWeek.vue";
+import Header from "./components/UI/Header.vue";
 
 const LeagueDetails = async () => {
   const league = new ClassicLeague(LEAGUEID.value);
   try {
     const details = await league.getDetails();
-    leaguedetails.value = details;
-    details.standings.results.forEach((x) => teams.value.push(x));
+    store.league = details;
   } catch (err) {
     console.error(err);
   }
@@ -19,7 +18,7 @@ const GameweekDetails = async () => {
   const games = new Gameweek(range);
   try {
     const details = await games.getDetails();
-    gameweeks.value = details;
+    store.gameweeks = details;
   } catch (err) {
     console.error(err);
   }
@@ -29,12 +28,14 @@ onMounted(() => {
   LeagueDetails();
   GameweekDetails();
 });
-var LEAGUEID = ref(1224173);
-//BACON - 1771345
-//JOBBNORGE - 1224173
-var leaguedetails = ref(null);
-var gameweeks = ref(null);
-var teams = ref([]);
+var leagues = {
+  pusebabe: 823015,
+  bacon: 1771345,
+  jobbnorge: 1224173,
+};
+
+var LEAGUEID = ref(leagues.jobbnorge);
+
 const onInput = debounce((e) => {
   console.log(LEAGUEID);
 }, 500);
@@ -42,35 +43,24 @@ const onInput = debounce((e) => {
 
 <template>
   <div>
-    <div v-if="leaguedetails" class="fpl_bg" style="padding: 1em; text-align: center">
-      <h1>{{ leaguedetails.league.name }}</h1>
-      <div style="display:flex; justify-content:space-between">
-        <NextGameWeek v-if="gameweeks" :gameweek="gameweeks.find((x) => !x.finished)"></NextGameWeek>
-        <div>
-          <p id="pCreatedHeader" style="margin: 0; margin-top: -1em">
-            {{
-            new Date(leaguedetails.league.created).toLocaleDateString("nb-NO")
-            }}
-          </p>
-          <label for="pCreatedHeader"> Created </label>
-        </div>
-      </div>
-    </div>
-    <div v-if="!leaguedetails">
+    <Header v-if="store.league"></Header>
+    <div v-if="!store.league">
       <label for="iLeagueID">Your Fantasy League ID</label>
       <input @input="onInput" v-model="LEAGUEID" />
     </div>
-    <div style="
-        padding: 1em;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        flex-flow: wrap;
         gap: 1.5em;
-        justify-items:center;
-      ">
-      <League v-if="leaguedetails?.standings" :leagueDetails="leaguedetails">
-      </League>
-      <GameWeeks v-if="gameweeks" :gameweeks="gameweeks"></GameWeeks>
-      <Transfers v-if="teams.length > 0" :teamIds="teams"></Transfers>
+        padding: 2.5em;
+      "
+    >
+      <League v-if="store.league"></League>
+      <GameWeeks v-if="store.gameweeks"></GameWeeks>
+      <Transfers v-if="store.league"></Transfers>
     </div>
   </div>
 </template>
@@ -83,9 +73,11 @@ body {
 }
 
 .fpl_bg {
-  background-image: linear-gradient(to right,
-      rgb(0, 255, 135),
-      rgb(2, 239, 255));
+  background-image: linear-gradient(
+    to right,
+    rgb(0, 255, 135),
+    rgb(2, 239, 255)
+  );
 }
 
 .bg_white {
@@ -111,9 +103,11 @@ tr {
   background-position: 0px center, right top, 0px center;
   background-position-x: 0px, right, 0px;
   background-position-y: center, top, center;
-  background-image: linear-gradient(rgba(255, 255, 255, 0) 10px,
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0) 10px,
       rgba(255, 255, 255, 0.2) 20px,
-      white 50px),
+      white 50px
+    ),
     url(/static/media/bgtop.png),
     linear-gradient(to right, rgb(2, 239, 255), rgb(98, 123, 255));
   box-shadow: rgb(107 107 107 / 8%) 0px 8px 12px 0px;

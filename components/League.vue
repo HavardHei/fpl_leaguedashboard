@@ -1,11 +1,11 @@
-<template>
-  <Standings :players="leagueDetails.standings.results"> </Standings>
-</template>
-
 <script setup>
-var props = defineProps({
-  leagueDetails: {
-    standings: Object,
-  },
-});
+import { store } from "~~/store/store";
 </script>
+
+<template>
+  <TeamsStandings
+    v-if="store.league.standings.results.some((x) => x.transfers)"
+  >
+  </TeamsStandings>
+  <TeamsCaptainPicks></TeamsCaptainPicks>
+</template>

@@ -1,37 +1,21 @@
 <script setup>
 import { User } from "fpl-ts";
 import TransferedPlayers from "./Transfers/TransferedPlayers.vue";
-import { store } from "~/store/store"
-
-var props = defineProps({
-  teamIds: Array,
-});
-var teams = ref([]);
-var playerIds = ref([]);
-var highestVal = ref(0);
+import { store } from "~/store/store";
+var isDoneLoading = ref(false);
 onMounted(async () => {
   try {
-    for (const teamId of props.teamIds) await GetTransfers(teamId);
+    for (const user of store.league.standings.results) await GetTransfers(user);
   } catch (error) {
     console.log(error);
   } finally {
-    var transfersByPlayers = teams.value.map((o) => o.player);
-    var high = 0;
-    high = transfersByPlayers
-      .flat()
-      .reduce((prev, cur) => (cur.event > prev ? cur.event : prev), high);
-    highestVal.value = high;
-    playerIds.value = teams.value;
+    isDoneLoading.value = true;
   }
 });
-var GetTransfers = async (teamId) => {
-  var team = new User(teamId.entry);
+var GetTransfers = async (user) => {
+  var team = new User(user.entry);
   try {
-    var player = await team.getTransfers();
-    console.log(player);
-    teams.value.push({ name: teamId.player_name, player: player });
-    store.transfers.push({ user: teamId, player: player })
-
+    user.transfers = await team.getTransfers();
   } catch (error) {
     console.log(error);
   }
@@ -39,9 +23,6 @@ var GetTransfers = async (teamId) => {
 </script>
 
 <template>
-  <div style="display:flex; flex-flow:wrap; gap:1em;">
-    <TransfersMade :teams="teams"> </TransfersMade>
-    <TransferedPlayers v-if="playerIds.length > 0 && highestVal > 0" :playerIds="playerIds" :lastGameweek="highestVal">
-    </TransferedPlayers>
-  </div>
+  <TransfersMade v-if="isDoneLoading"> </TransfersMade>
+  <TransferedPlayers v-if="isDoneLoading"> </TransferedPlayers>
 </template>
