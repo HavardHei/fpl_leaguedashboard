@@ -8,8 +8,7 @@ var changedRank = (val) => {
 };
 var GetTransfers = (id) => {
   var user_transfers = store.league.standings.results.find((t) => t.id == id);
-  console.log(user_transfers);
-  return user_transfers.transfers.filter(
+  return user_transfers?.transfers?.filter(
     (p) => p.event == store.currentgameweek.id
   )?.length;
 };
@@ -30,10 +29,8 @@ var GetTransfers = (id) => {
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(player, index) in store.league.standings.results"
-            :key="index"
-          >
+          <tr v-for="(player, index) in store.league.standings.results.sort((a,b)=>{return a.rank - b.rank} )"
+            :key="index">
             <td>
               {{ index + 1 }}
               <span v-html="changedRank(player.last_rank - player.rank)"></span>
@@ -43,13 +40,13 @@ var GetTransfers = (id) => {
                 {{ player.entry_name.replace("?", "").replace("�", "") }}
               </div>
               <span style="font-size: 0.7em; color: grey">{{
-                player.player_name.replace("?", "").replace("�", "")
+              player.player_name.replace("?", "").replace("�", "")
               }}</span>
             </td>
             <td style="text-align: center">{{ GetTransfers(player.id) }}</td>
             <td style="text-align: center">{{ player.event_total }}</td>
             <td style="text-align: center">{{ player.total }}</td>
-            <td>{{ player.captain.web_name }}</td>
+            <td>{{ player.captain?.web_name }}</td>
           </tr>
         </tbody>
       </table>
