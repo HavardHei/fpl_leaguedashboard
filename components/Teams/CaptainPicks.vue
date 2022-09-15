@@ -15,7 +15,7 @@ var GetTeams = async () => {
       })
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 var GetTeam = async (u) => {
@@ -47,7 +47,7 @@ var GetPlayers = async () => {
 };
 </script>
 <template>
-  <FPLCard>
+  <FPLCard v-show="false">
     <template v-slot:header> Captain picks </template>
     <template v-slot:content v-if="isDoneLoading">
       <div v-for="(u, index) in store.league.standings.results" :key="index">

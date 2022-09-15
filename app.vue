@@ -8,13 +8,13 @@ const LeagueDetails = async () => {
   const league = new ClassicLeague(LEAGUEID.value);
   try {
     const details = await league.getDetails();
-    if (details.league != null)
-      store.league = details;
+    if (details.league != null) store.league = details;
   } catch (err) {
     console.error(err);
   }
 };
 const GameweekDetails = async () => {
+  console.log(store.league);
   var range = Array.from({ length: 38 }, (x, i) => i + 1);
   const games = new Gameweek(range);
   try {
@@ -24,7 +24,6 @@ const GameweekDetails = async () => {
     console.error(err);
   }
 };
-
 onMounted(() => {
   LeagueDetails();
   GameweekDetails();
@@ -33,9 +32,10 @@ var leagues = {
   pusebabe: 823015,
   bacon: 1771345,
   jobbnorge: 1224173,
+  folk_og_rovere: 77687,
 };
 
-var LEAGUEID = ref(leagues.bacon);
+var LEAGUEID = ref(leagues.jobbnorge);
 
 const onInput = debounce((e) => {
   console.log(LEAGUEID);
@@ -50,14 +50,16 @@ const onInput = debounce((e) => {
     </div>
     <div v-else>
       <Header></Header>
-      <div style="
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        flex-flow: wrap;
-        gap: 1.5em;
-        padding: 2.5em;
-      ">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          flex-flow: wrap;
+          gap: 1.5em;
+          padding: 2.5em;
+        "
+      >
         <League></League>
         <GameWeeks v-if="store.gameweeks"></GameWeeks>
         <Transfers></Transfers>
@@ -74,9 +76,11 @@ body {
 }
 
 .fpl_bg {
-  background-image: linear-gradient(to right,
-      rgb(0, 255, 135),
-      rgb(2, 239, 255));
+  background-image: linear-gradient(
+    to right,
+    rgb(0, 255, 135),
+    rgb(2, 239, 255)
+  );
 }
 
 .bg_white {
@@ -102,9 +106,11 @@ tr {
   background-position: 0px center, right top, 0px center;
   background-position-x: 0px, right, 0px;
   background-position-y: center, top, center;
-  background-image: linear-gradient(rgba(255, 255, 255, 0) 10px,
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0) 10px,
       rgba(255, 255, 255, 0.2) 20px,
-      white 50px),
+      white 50px
+    ),
     url(/static/media/bgtop.png),
     linear-gradient(to right, rgb(2, 239, 255), rgb(98, 123, 255));
   box-shadow: rgb(107 107 107 / 8%) 0px 8px 12px 0px;

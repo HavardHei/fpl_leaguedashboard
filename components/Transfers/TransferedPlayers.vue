@@ -40,7 +40,7 @@ var GetPlayers = async () => {
       toUpdate.detailed = p;
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 
   var idsOutgoing = playersOutgoing.value.map((x) => x.out);
@@ -52,7 +52,7 @@ var GetPlayers = async () => {
       toUpdate.detailed = p;
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 </script>

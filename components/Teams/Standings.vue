@@ -2,15 +2,19 @@
 import FPLCard from "./..//UI/FPLCard.vue";
 import { store } from "~/store/store.js";
 
-var changedRank = (val) => {
-  if (val < 0) return `<span style="color:red">(${val})</span>`;
-  if (val > 0) return `<span style="color:green">(+${val})</span>`;
-};
-var GetTransfers = (id) => {
-  var user_transfers = store.league.standings.results.find((t) => t.id == id);
-  return user_transfers?.transfers?.filter(
-    (p) => p.event == store.currentgameweek.id
-  )?.length;
+var GetChipSymbol = (chip) => {
+  switch (chip.name) {
+    case "wildcard":
+      return "🃏";
+    case "freehit":
+      return "🏏";
+    case "bench_boost":
+      return "🛋";
+    case "3xc":
+      return "👨‍✈️";
+    default:
+      return "";
+  }
 };
 </script>
 <template>
@@ -25,28 +29,57 @@ var GetTransfers = (id) => {
             <th>Subs</th>
             <th>Points</th>
             <th>Total</th>
-            <th>C</th>
+            <th>Captain</th>
+            <th>Chips</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(player, index) in store.league.standings.results.sort((a,b)=>{return a.rank - b.rank} )"
-            :key="index">
+          <tr
+            v-for="(player, index) in store.league.standings.results.sort(
+              (a, b) => {
+                return a.rank - b.rank;
+              }
+            )"
+            :key="index"
+          >
             <td>
               {{ index + 1 }}
-              <span v-html="changedRank(player.last_rank - player.rank)"></span>
+              <span
+                v-if="player.last_rank - player.rank < 0"
+                style="color: red"
+              >
+                -{{ player.last_rank - player.rank }}
+              </span>
+              <span
+                v-if="player.last_rank - player.rank > 0"
+                style="color: green"
+              >
+                +{{ player.last_rank - player.rank }}
+              </span>
             </td>
             <td>
               <div>
                 {{ player.entry_name.replace("?", "").replace("�", "") }}
               </div>
               <span style="font-size: 0.7em; color: grey">{{
-              player.player_name.replace("?", "").replace("�", "")
+                player.player_name.replace("?", "").replace("�", "")
               }}</span>
             </td>
-            <td style="text-align: center">{{ GetTransfers(player.id) }}</td>
+            <td style="text-align: center">
+              {{
+                player.transfers?.filter(
+                  (p) => p.event == store.currentgameweek.id
+                )?.length
+              }}
+            </td>
             <td style="text-align: center">{{ player.event_total }}</td>
             <td style="text-align: center">{{ player.total }}</td>
             <td>{{ player.captain?.web_name }}</td>
+            <td>
+              <span v-for="(chip, index) in player.chips" :key="index">
+                {{ GetChipSymbol(chip) }}</span
+              >
+            </td>
           </tr>
         </tbody>
       </table>
