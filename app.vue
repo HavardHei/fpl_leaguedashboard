@@ -1,55 +1,45 @@
 <script setup>
-import { Gameweek, ClassicLeague } from "fpl-ts";
 import { store } from "~/store/store.js";
 import debounce from "~/helpers/debounce";
-import Header from "./components/UI/Header.vue";
 
-const LeagueDetails = async () => {
-  const league = new ClassicLeague(LEAGUEID.value);
-  try {
-    const details = await league.getDetails();
-    if (details.league != null) store.league = details;
-  } catch (err) {
-    console.error(err);
-  }
-};
-const GameweekDetails = async () => {
-  console.log(store.league);
-  var range = Array.from({ length: 38 }, (x, i) => i + 1);
-  const games = new Gameweek(range);
-  try {
-    const details = await games.getDetails();
-    store.gameweeks = details;
-  } catch (err) {
-    console.error(err);
-  }
-};
-onMounted(() => {
-  LeagueDetails();
-  GameweekDetails();
-});
 var leagues = {
   pusebabe: 823015,
   bacon: 1771345,
   jobbnorge: 1224173,
   folk_og_rovere: 77687,
 };
-
-var LEAGUEID = ref(leagues.jobbnorge);
+var tranferscomplete = ref(false);
+const LeagueDetails = async () => {
+  var data = await fetch(`/api/leaguedetails?id=${LEAGUEID.value}`);
+  var json = await data.json();
+  store.league = json;
+};
+const GameweekDetails = async () => {
+  var data = await fetch(`/api/gameweek?range=38`);
+  var json = await data.json();
+  store.gameweeks = json;
+};
 
 const onInput = debounce((e) => {
   console.log(LEAGUEID);
 }, 500);
+const tcomplete = () => {
+  tranferscomplete.value = true;
+};
+var LEAGUEID = ref(leagues.jobbnorge);
+
+LeagueDetails();
+GameweekDetails();
 </script>
 
 <template>
   <div>
-    <div v-if="store.league == null">
+    <div v-if="!store.league">
       <label for="iLeagueID">Your Fantasy League ID</label>
       <input @input="onInput" v-model="LEAGUEID" />
     </div>
     <div v-else>
-      <Header></Header>
+      <UIHeader></UIHeader>
       <div
         style="
           display: flex;
@@ -60,9 +50,9 @@ const onInput = debounce((e) => {
           padding: 2.5em;
         "
       >
-        <League></League>
+        <League :tranferscomplete="tranferscomplete"></League>
         <GameWeeks v-if="store.gameweeks"></GameWeeks>
-        <Transfers></Transfers>
+        <Transfers @tranferscomplete="tcomplete"></Transfers>
       </div>
     </div>
   </div>

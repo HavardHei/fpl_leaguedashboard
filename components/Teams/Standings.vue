@@ -1,6 +1,8 @@
 <script setup>
-import FPLCard from "./..//UI/FPLCard.vue";
 import { store } from "~/store/store.js";
+var props = defineProps({
+  tranferscomplete: Boolean,
+});
 
 var GetChipSymbol = (chip) => {
   switch (chip.name) {
@@ -18,7 +20,7 @@ var GetChipSymbol = (chip) => {
 };
 </script>
 <template>
-  <FPLCard>
+  <UIFPLCard v-if="props.tranferscomplete == true">
     <template v-slot:header> Standings </template>
     <template v-slot:content>
       <table style="text-align: left">
@@ -74,7 +76,7 @@ var GetChipSymbol = (chip) => {
             </td>
             <td style="text-align: center">{{ player.event_total }}</td>
             <td style="text-align: center">{{ player.total }}</td>
-            <td>{{ player.captain?.web_name }}</td>
+            <td>{{ player.captain?.web_name ?? "--" }}</td>
             <td>
               <span v-for="(chip, index) in player.chips" :key="index">
                 {{ GetChipSymbol(chip) }}</span
@@ -84,7 +86,7 @@ var GetChipSymbol = (chip) => {
         </tbody>
       </table>
     </template>
-  </FPLCard>
+  </UIFPLCard>
 </template>
 
 <style>

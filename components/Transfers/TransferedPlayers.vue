@@ -1,63 +1,66 @@
 <script setup>
-import { Player } from "fpl-ts";
 import { store } from "~/store/store";
-import FPLCard from "../UI/FPLCard.vue";
 
-var playersIncomming = ref([]);
-var playersOutgoing = ref([]);
+var playersIncomming = ref({});
+var playersOutgoing = ref({});
+var incomingForView = ref([]);
+var outgoingForView = ref([]);
 onMounted(() => {
-  store.league.standings.results.forEach((i) => {
-    i.transfers.forEach((x) => {
-      if (x.event == store.currentgameweek.id) {
-        if (playersIncomming.value.find((x) => x.in == x.element_in) != null)
-          playersIncomming.value[x.element_in].users.push(i.player_name);
-        else
-          playersIncomming.value.push({
-            in: x.element_in,
-            users: [i.player_name],
-          });
-        if (playersOutgoing.value.find((x) => x.out == x.element_out) != null)
-          playersOutgoing.value[x.element_out].users.push(i.player_name);
-        else
-          playersOutgoing.value.push({
-            out: x.element_out,
-            users: [i.player_name],
-          });
-      }
-    });
+  store.league.standings.results.forEach((user) => {
+    if (user.transfers.length > 0)
+      user.transfers.forEach((transferEvent) => {
+        if (transferEvent.event == store.currentgameweek.id) {
+          if (playersIncomming.value[transferEvent.element_in] != null) {
+            playersIncomming.value[transferEvent.element_in].users.push(
+              user.player_name
+            );
+          } else
+            playersIncomming.value[transferEvent.element_in] = {
+              users: [user.player_name],
+            };
+
+          if (playersOutgoing.value[transferEvent.element_out] != null) {
+            playersOutgoing.value[transferEvent.element_out].users.push(
+              user.player_name
+            );
+          } else
+            playersOutgoing.value[transferEvent.element_out] = {
+              users: [user.player_name],
+            };
+        }
+      });
   });
-  if (playersIncomming.value.length > 0 && playersOutgoing.value.length > 0)
-    GetPlayers();
+  GetPlayers();
 });
 var GetPlayers = async () => {
-  var idsIncoming = playersIncomming.value.map((x) => x.in);
-  var pi = new Player(idsIncoming);
-  try {
-    var playersSummary1 = await pi.getDetails();
+  var idsIncoming = Object.keys(playersIncomming.value);
+  var { data } = await useFetch(`/api/playerdetails`, {
+    method: "post",
+    body: {
+      ids: idsIncoming,
+    },
+  });
+  incomingForView.value = data.value;
+  incomingForView.value.forEach((incoming) => {
+    incoming.users = playersIncomming.value[incoming.id].users;
+  });
 
-    playersSummary1.forEach((p) => {
-      var toUpdate = playersIncomming.value.find((pi) => pi.in == p.id);
-      toUpdate.detailed = p;
-    });
-  } catch (error) {
-    console.error(error);
-  }
+  var idsOutgoing = Object.keys(playersOutgoing.value); // Unique ids
+  var { data } = await useFetch(`/api/playerdetails`, {
+    method: "post",
+    body: {
+      ids: idsOutgoing,
+    },
+  });
+  outgoingForView.value = data.value;
 
-  var idsOutgoing = playersOutgoing.value.map((x) => x.out);
-  var po = new Player(idsOutgoing);
-  try {
-    var playersSummary2 = await po.getDetails();
-    playersSummary2.forEach((p) => {
-      var toUpdate = playersOutgoing.value.find((pi) => pi.out == p.id);
-      toUpdate.detailed = p;
-    });
-  } catch (error) {
-    console.error(error);
-  }
+  outgoingForView.value.forEach((outgoing) => {
+    outgoing.users = playersOutgoing.value[outgoing.id].users;
+  });
 };
 </script>
 <template>
-  <FPLCard>
+  <UIFPLCard>
     <template v-slot:header>
       <div style="display: flex; justify-content: space-around; gap: 1em">
         <span>✍Incoming</span>
@@ -69,12 +72,10 @@ var GetPlayers = async () => {
         style="display: flex; min-width: 350px; justify-content: space-evenly"
       >
         <div>
-          <div v-for="(playerid, index) in playersIncomming" :key="index">
+          <div v-for="playerid in incomingForView" :key="index">
             <div style="font-weight: bolder; margin-top: 5px">
               <span style="font-size: 0.5em">🟢</span>
-              {{
-                `${playerid?.detailed?.web_name} (${playerid?.detailed?.event_points})`
-              }}
+              {{ `${playerid?.web_name} (${playerid?.event_points})` }}
             </div>
             <div
               v-for="(user, index) in playerid.users"
@@ -87,12 +88,10 @@ var GetPlayers = async () => {
         </div>
         <div style="border: 1px solid lightgreen"></div>
         <div>
-          <div v-for="(playerid, index) in playersOutgoing" :key="index">
+          <div v-for="playerid in outgoingForView" :key="index">
             <div style="font-weight: bolder; margin-top: 5px">
               <span style="font-size: 0.5em">🔴</span>
-              {{
-                `${playerid?.detailed?.web_name} (${playerid?.detailed?.event_points})`
-              }}
+              {{ `${playerid?.web_name} (${playerid?.event_points})` }}
             </div>
             <div
               v-for="(user, index) in playerid.users"
@@ -105,5 +104,5 @@ var GetPlayers = async () => {
         </div>
       </div>
     </template>
-  </FPLCard>
+  </UIFPLCard>
 </template>

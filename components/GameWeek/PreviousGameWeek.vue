@@ -1,5 +1,4 @@
 <script setup>
-import FPLCard from "../UI/FPLCard.vue";
 import { store } from "~~/store/store";
 
 var chips = store.currentgameweek.chip_plays;
@@ -10,7 +9,7 @@ var chip_3xc = chips.find((x) => x.chip_name == "3xc");
 </script>
 
 <template>
-  <FPLCard>
+  <UIFPLCard>
     <template v-slot:header>
       {{ store.currentgameweek.name }}
     </template>
@@ -38,5 +37,5 @@ var chip_3xc = chips.find((x) => x.chip_name == "3xc");
         </div>
       </div>
     </template>
-  </FPLCard>
+  </UIFPLCard>
 </template>

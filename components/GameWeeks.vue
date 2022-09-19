@@ -1,6 +1,5 @@
 <script setup>
 import { store } from "~/store/store.js";
-import PreviousGameWeek from "./GameWeek/PreviousGameWeek.vue";
 
 var previousGameWeek = store.gameweeks.find(
   (x) => x.id == store.gameweeks.find((x) => !x.finished).id - 1
@@ -8,5 +7,5 @@ var previousGameWeek = store.gameweeks.find(
 store.currentgameweek = previousGameWeek;
 </script>
 <template>
-  <PreviousGameWeek></PreviousGameWeek>
+  <GameWeekPreviousGameWeek></GameWeekPreviousGameWeek>
 </template>
