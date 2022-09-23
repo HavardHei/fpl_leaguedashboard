@@ -6,10 +6,7 @@ var props = defineProps({
 </script>
 
 <template>
-  <TeamsStandings
-    v-if="store.league?.standings?.results.some((x) => x.transfers)"
-    :tranferscomplete="props.tranferscomplete"
-  >
+  <TeamsStandings v-if="store.league?.standings?.results.some((x) => x.transfers)">
   </TeamsStandings>
-  <TeamsCaptainPicks v-if="props.tranferscomplete"></TeamsCaptainPicks>
+  <TeamsCaptainPicks v-if=" store.league?.standings"></TeamsCaptainPicks>
 </template>

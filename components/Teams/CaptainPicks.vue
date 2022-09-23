@@ -2,35 +2,33 @@
 import { store } from "~~/store/store";
 
 onMounted(async () => {
-  await GetTeams();
-  if (isDoneLoading.value) GetPlayers();
+  GetTeams();
 });
-var isDoneLoading = ref(false);
-var GetTeams = async () => {
-  try {
-    Promise.all(
-      store.league.standings.results.forEach((u) => {
-        GetTeam(u);
-      })
-    );
-  } catch (error) {
-    console.error(error);
-  } finally {
-    isDoneLoading.value = true;
-  }
-};
-var GetTeam = async (u) => {
-  try {
-    var data = await fetch(
-      `/api/picks?entry=${u.entry}&gw=${[store.currentgameweek.id]}`
-    );
-    var json = await data.json();
 
-    u.team = json;
-  } catch (error) {
-    console.error(error);
+var isDoneLoading = ref(false);
+
+watch(isDoneLoading, (val, oldval) => {
+  if (val) GetPlayers()
+})
+var GetTeams = async () => {
+  for (const user of store.league.standings.results) {
+    await GetTeam(user);
   }
+  isDoneLoading.value = true;
+}
+var GetTeam = async (result) => {
+  return new Promise(async (res) => {
+    try {
+      var data = await fetch(
+        `/api/picks?entry=${result.entry}&gw=${[store.currentgameweek.id]}`
+      );
+      var json = await data.json();
+      result.team = json;
+      res("fluff puff");
+    } catch (error) { console.error(error) }
+  })
 };
+
 var GetPlayers = async () => {
   const playerIds = [];
   var teams = store.league.standings.results.map((x) => x.team);
@@ -40,17 +38,6 @@ var GetPlayers = async () => {
         if (y && y.is_captain) playerIds.push(y.element);
       });
   });
-  console.log("LOL");
-  var data = await fetch("/api/playerdetails", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(playerIds.join(",")),
-  });
-  var json = await data.json();
-  store.players = json;
   store.league.standings.results.forEach((u) => {
     var re = u.team[store.currentgameweek.id].find((p) => p.is_captain);
     var captainId = re.element;
@@ -62,12 +49,14 @@ var GetPlayers = async () => {
 <template>
   <UIFPLCard v-show="false">
     <template v-slot:header> Captain picks </template>
-    <template v-slot:content v-if="isDoneLoading">
+    <template v-slot:content v-if="isDoneLoading == true">
       <div v-for="(u, index) in store.league.standings.results" :key="index">
-        {{ u.captain.web_name }}
+        {{ u.captain?.web_name }}
       </div>
     </template>
   </UIFPLCard>
 </template>
 
-<style></style>
+<style>
+
+</style>

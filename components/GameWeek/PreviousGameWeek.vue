@@ -14,6 +14,7 @@ var chip_3xc = chips.find((x) => x.chip_name == "3xc");
       {{ store.currentgameweek.name }}
     </template>
     <template v-slot:content>
+
       <div style="display: flex; justify-content: space-between; gap: 2em">
         <div>
           <h4>Scores</h4>

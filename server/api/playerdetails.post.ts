@@ -2,6 +2,7 @@ import { Player } from "fpl-ts";
 
 export default defineEventHandler(async (event) => {
   const body = await useBody(event);
+  console.log(body);
   var toReturn = body;
   var pi = new Player(body.ids);
   try {

@@ -34,25 +34,18 @@ onMounted(() => {
 });
 var GetPlayers = async () => {
   var idsIncoming = Object.keys(playersIncomming.value);
-  var { data } = await useFetch(`/api/playerdetails`, {
-    method: "post",
-    body: {
-      ids: idsIncoming,
-    },
-  });
-  incomingForView.value = data.value;
+
+  idsIncoming.forEach(id => {
+    incomingForView.value.push(store.players.find(p => p.id == id))
+  })
   incomingForView.value.forEach((incoming) => {
     incoming.users = playersIncomming.value[incoming.id].users;
   });
 
   var idsOutgoing = Object.keys(playersOutgoing.value); // Unique ids
-  var { data } = await useFetch(`/api/playerdetails`, {
-    method: "post",
-    body: {
-      ids: idsOutgoing,
-    },
-  });
-  outgoingForView.value = data.value;
+  idsOutgoing.forEach(id => {
+    outgoingForView.value.push(store.players.find(p => p.id == id))
+  })
 
   outgoingForView.value.forEach((outgoing) => {
     outgoing.users = playersOutgoing.value[outgoing.id].users;
@@ -68,20 +61,14 @@ var GetPlayers = async () => {
       </div>
     </template>
     <template v-slot:content>
-      <div
-        style="display: flex; min-width: 350px; justify-content: space-evenly"
-      >
+      <div style="display: flex; min-width: 350px; justify-content: space-evenly">
         <div>
           <div v-for="playerid in incomingForView" :key="index">
             <div style="font-weight: bolder; margin-top: 5px">
               <span style="font-size: 0.5em">🟢</span>
               {{ `${playerid?.web_name} (${playerid?.event_points})` }}
             </div>
-            <div
-              v-for="(user, index) in playerid.users"
-              :key="index"
-              style="font-size: 0.8em"
-            >
+            <div v-for="(user, index) in playerid.users" :key="index" style="font-size: 0.8em">
               {{ user }}
             </div>
           </div>
@@ -93,11 +80,7 @@ var GetPlayers = async () => {
               <span style="font-size: 0.5em">🔴</span>
               {{ `${playerid?.web_name} (${playerid?.event_points})` }}
             </div>
-            <div
-              v-for="(user, index) in playerid.users"
-              :key="index"
-              style="font-size: 0.8em"
-            >
+            <div v-for="(user, index) in playerid.users" :key="index" style="font-size: 0.8em">
               {{ user }}
             </div>
           </div>
