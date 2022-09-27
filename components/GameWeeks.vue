@@ -1,4 +1,4 @@
 
 <template>
-  <GameWeekPreviousGameWeek></GameWeekPreviousGameWeek>
+  <GameWeekPrevious></GameWeekPrevious>
 </template>

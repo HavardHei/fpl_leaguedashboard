@@ -1,14 +1,15 @@
-FROM node:14-alpine
+FROM node:17-alpine
 
-WORKDIR /app
-
-RUN apk update && apk upgrade
-RUN apk add git
-
-COPY ./package*.json /app/
-
-RUN npm install && npm cache clean --force
-
+RUN mkdir -p /usr/src/nuxt-app
+WORKDIR /usr/src/nuxt-app
 COPY . .
 
-ENV PATH ./node_modules/.bin/:$PATH
+RUN npm ci && npm cache clean --force
+RUN npm run build
+
+ENV NUXT_HOST=0.0.0.0
+ENV NUXT_PORT=3000
+
+EXPOSE 3000 
+
+ENTRYPOINT ["node", ".output/server/index.mjs"]

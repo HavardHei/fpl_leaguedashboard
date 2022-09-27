@@ -26,7 +26,7 @@ var GetChipSymbol = (chip) => {
           <tr>
             <th>#</th>
             <th>Team</th>
-            <th>Subs</th>
+            <th>🔁</th>
             <th>Points</th>
             <th>Total</th>
             <th>Captain</th>
@@ -61,7 +61,7 @@ var GetChipSymbol = (chip) => {
               player.transfers?.filter(
               (p) => p.event == store.currentgameweek.id
               )?.length
-              }}
+              }} ({{player.transfers.length}})
             </td>
             <td style="text-align: center">{{ player.event_total }}</td>
             <td style="text-align: center">{{ player.total }}</td>

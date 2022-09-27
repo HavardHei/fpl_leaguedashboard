@@ -1,14 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "build": "nuxt build --spa",
+    "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "nuxt start"
   },
   "devDependencies": {
-    "nuxt": "3.0.0-rc.8"
+    "nuxt": "^3.0.0-rc.8"
   },
   "dependencies": {
     "axios": "^0.27.2",

@@ -1,6 +1,7 @@
 <script setup>
 import { store } from "~/store/store.js";
 import debounce from "~/helpers/debounce";
+import TransferOverview from "./components/TransferOverview.vue";
 
 var leagues = {
   pusebabe: 823015,
@@ -46,7 +47,7 @@ onMounted(async () => {
       <UIHeader></UIHeader>
       <div class="layout">
         <League></League>
-        <TransfersOverview></TransfersOverview>
+        <TransferOverview></TransferOverview>
         <GameWeeks v-if="store.gameweeks"></GameWeeks>
       </div>
     </div>
