@@ -1,21 +1,5 @@
 <script setup>
 import { store } from "~/store/store.js";
-
-
-var GetChipSymbol = (chip) => {
-  switch (chip.name) {
-    case "wildcard":
-      return "🃏";
-    case "freehit":
-      return "🏏";
-    case "bench_boost":
-      return "🛋";
-    case "3xc":
-      return "👨‍✈️";
-    default:
-      return "";
-  }
-};
 </script>
 <template>
   <UIFPLCard>
@@ -42,7 +26,7 @@ var GetChipSymbol = (chip) => {
             <td>
               {{ index + 1 }}
               <span v-if="player.last_rank - player.rank < 0" style="color: red">
-                -{{ player.last_rank - player.rank }}
+                {{ player.last_rank - player.rank }}
               </span>
               <span v-if="player.last_rank - player.rank > 0" style="color: green">
                 +{{ player.last_rank - player.rank }}
@@ -61,14 +45,31 @@ var GetChipSymbol = (chip) => {
               player.transfers?.filter(
               (p) => p.event == store.currentgameweek.id
               )?.length
-              }} ({{player.transfers.length}})
+              }}
+              ({{ player.transfers?.length }})
             </td>
             <td style="text-align: center">{{ player.event_total }}</td>
             <td style="text-align: center">{{ player.total }}</td>
             <td>{{ player.captain?.web_name ?? "--" }}</td>
-            <td>
+            <td v-if="player.chips">
               <span v-for="(chip, index) in player.chips" :key="index">
-                {{ GetChipSymbol(chip) }}</span>
+                <span :title="
+                {
+                  wildcard: 'Wildcard', 
+                  freehit: 'Freehit', 
+                  bench_boost: 'Benchboost', 
+                  '3xc':'👨Triple Captain', 
+                }[chip.name]">
+                  {{
+                  {
+                  wildcard: "🃏",
+                  freehit: "🏏",
+                  bench_boost: "💺",
+                  "3xc":"👨‍✈️",
+                  }[chip.name]
+                  }}
+                </span>
+              </span>
             </td>
           </tr>
         </tbody>

@@ -9,14 +9,14 @@ var leagues = {
   jobbnorge: 1224173,
   folk_og_rovere: 77687,
 };
+var LEAGUEID = ref(null);
+
 const LeagueDetails = async () => {
   try {
     var data = await fetch(`/api/leaguedetails?id=${LEAGUEID.value}`);
     var json = await data.json();
     store.league = json;
-    store.currentgameweek = store.gameweeks.find(
-      (x) => x.id == store.gameweeks.find((x) => !x.finished).id - 1
-    );
+
   } catch (error) {
     console.error(error);
     LeagueDetails();
@@ -25,30 +25,44 @@ const LeagueDetails = async () => {
 
 
 const onInput = debounce((e) => {
-  console.log(LEAGUEID);
+  console.log(LEAGUEID.value);
+  initLeague();
 }, 500);
-var LEAGUEID = ref(leagues.jobbnorge);
 onMounted(async () => {
   var response = await fetch('api/overview');
   var json = await response.json();
   store.gameweeks = json.events;
   store.players = json.elements;
-  await LeagueDetails();
+  store.currentgameweek = store.gameweeks.find(
+    (x) => x.id == store.gameweeks.find((x) => !x.finished).id - 1
+  );
 });
+var initLeague = async () => {
+  await LeagueDetails();
+}
 </script>
 
 <template>
   <div>
-    <div v-if="!store.league">
-      <label for="iLeagueID">Your Fantasy League ID</label>
-      <input @input="onInput" v-model="LEAGUEID" />
+    <UIHeader></UIHeader>
+    <div v-if="!store.league" style="margin:40px 0; text-align: center;">
+      <div style="display:flex; flex-direction:column; align-items: center; gap:1em;">
+        <input @input="onInput" v-model="LEAGUEID" style="border:none; border-bottom: 1px solid; width:250px;" />
+        <label for="iLeagueID">Your Fantasy League ID</label>
+        <small>.../leagues/{THIS IS YOUR LEAGUEID}/standings/...</small>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items: center; margin-top:40px">
+        <h4>Leagues</h4>
+        <h5 v-for="league in leagues" v-on:click="{LEAGUEID =  league; initLeague()}" class="hoverable" style="width:250px">
+          {{Object.keys(leagues).find(key => leagues[key] === league)}}
+        </h5>
+      </div>
     </div>
-    <div v-else>
-      <UIHeader></UIHeader>
-      <div class="layout">
-        <League></League>
+    <div>
+      <div v-if="store.league" class="layout">
+        <League ></League>
         <TransferOverview></TransferOverview>
-        <GameWeeks v-if="store.gameweeks"></GameWeeks>
+        <GameWeeks ></GameWeeks>
       </div>
     </div>
   </div>
@@ -59,6 +73,18 @@ body {
   margin: 0;
   font-family: "PremierSans-Bold", Arial, "Helvetica Neue", Helvetica,
     sans-serif;
+}
+
+.hoverable {
+padding:0.75em;
+margin:0;
+border-radius: 5%;
+transition: all 250ms;
+}
+
+.hoverable:hover {
+  cursor: pointer;
+  background-color: rgb(0, 255, 135);
 }
 
 .layout {
